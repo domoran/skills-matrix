@@ -1,0 +1,3 @@
+[submodule "packages/meteor-treeview"]
+	path = packages/meteor-treeview
+	url = https://github.com/domoran/meteor-treeview.git
