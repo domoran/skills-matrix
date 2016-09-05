@@ -1,10 +1,13 @@
-import { Tags } from '/imports/collections/Tags';
+import { Tags, Skills} from '/imports/collections/Tags';
 
 Template.SkillsView.events ({
-    'submit js-task-create' : function (event, instance) {
-        console.log("Submit!"); 
+    'submit .js-skill-create' : function (event, instance) {
         event.preventDefault();
-        return false;
+        var skillTitle = event.target.skillTitle.value;
+        var category   = instance.selectedTag.get(); 
+        
+        Meteor.call('skill_create', skillTitle, category); 
+        event.target.skillTitle.value = ""; 
     },
 });
 
@@ -24,7 +27,7 @@ Template.SkillsView.helpers ({
         return function (item) { instance.selectedTag.set(item); };
     },
     
-    mySkills() {
-        return [];
+    allSkills() {
+        return Skills.find({});
     },
 });

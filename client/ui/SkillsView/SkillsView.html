@@ -6,9 +6,11 @@
     
     <div class="col-md-8 tasklist">
         <div class="row-fluid">
-            <form href="#" class="js-task-create"> 
-                <label>Create New Skill (in Category '{{currentCategory.text}}'): </label>
-                <input type="text" name="taskname"/>
+            <form href="#" class="js-skill-create">
+                <div class="form-group">
+                    <label for="skillTitle">Create New Skill (in Category '{{currentCategory.text}}'): </label>
+                    <input type="text" class="form-control" name="skillTitle" id="skillTitle" placeholder="Skill Title">
+                </div>
             </form>
         </div>
         
@@ -16,8 +18,8 @@
         </div>
         
         <div class="row-fluid">
-            {{#each mySkills as skill}}
-                {{ > SkillsEditor skill=skill }}
+            {{#each allSkills as skill}}
+                {{ > SkillEditor skill=skill }}
             {{/each}}
         </div>
     </div>
