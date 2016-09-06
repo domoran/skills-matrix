@@ -1,3 +1,3 @@
 Template.SkillEditor.helpers ({
-    selectedCategory () { return 'unknown'; }
+    selectedCategory () { return 'unknown'; },
 });

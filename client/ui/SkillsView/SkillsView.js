@@ -27,7 +27,10 @@ Template.SkillsView.helpers ({
         return function (item) { instance.selectedTag.set(item); };
     },
     
-    allSkills() {
-        return Skills.find({});
+    skillGroups() {
+        var items = Tags.find({ skills: { $exists: true, $not: {$size: 0} } });
+        console.log(items.fetch());
+        
+        return items; 
     },
 });
