@@ -5,7 +5,11 @@
 <body>
   {{ > header }}
   <main>
-    {{ > SkillsView }}
+    {{#if currentUser }}
+        {{ > SkillsView }}
+    {{else}}
+        <centered>Please login before you can edit skills!</centered>
+    {{/if}}
   </main>
 </body>
 

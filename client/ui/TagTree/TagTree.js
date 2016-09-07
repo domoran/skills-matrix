@@ -18,7 +18,7 @@ Template.TagTree.helpers({
             plugins.push("dnd"); 
         } 
         
-        var context = {
+        var args = {
                 "collection": Tags,
                 "subscription": "tags",
                 "getNodes": function (parent) {
@@ -35,12 +35,13 @@ Template.TagTree.helpers({
             
                     return tags; 
                 },
+                
+                openAll: true,
         
                 processNode (node, item)  {
                     node.type = item.type; 
                 },
         
-                "openAll": false,
                 "mapping": {
                     "text": "text",
                 },
@@ -59,19 +60,19 @@ Template.TagTree.helpers({
                         }
                     },
                     "create": function(e, item, data) { 
-                        Meteor.call("tag_insert", data.parent, "New Tag"); 
+                        Meteor.call("tag_insert", data.parent, "New Category"); 
                     },
                     "rename": function(e, item, data) { 
                         Meteor.call("tag_rename", item, data.text); 
                     },
                     "move": function(e, item, data) { 
                         console.log(arguments);  
-                        return false; 
                         Meteor.call("tag_move", item, data.parent);
+                        return false; 
                     },
                 }
         };
         
-        return context; 
+        return args; 
     }
 });

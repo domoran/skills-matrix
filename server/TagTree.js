@@ -14,6 +14,7 @@ let getChilds = function (id, childsArray) {
 
 Meteor.methods({
     tag_insert(parentId, text) {
+        console.log("Insert:" + parentId + "-->" + text);
         if (!Tags.findOne({_id: parentId})) parentId = null; 
         
         Tags.insert({ text, parent: parentId});  

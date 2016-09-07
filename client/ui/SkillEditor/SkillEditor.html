@@ -1,5 +1,8 @@
 <template name="SkillEditor">
     <div class="row-fluid">
-        <b>{{skill.text}}</b>
+        <div class="col-md-5"><b>{{skill.text}}</b></div>
+        <div class="col-md-5">
+            {{> starsRating id=widgetId rating=userSkill size='lg' mutable=true}}
+        </div>        
     </div>
 </template>
