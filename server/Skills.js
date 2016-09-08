@@ -1,8 +1,12 @@
-import { Skills, Tags} from '../imports/collections/Tags';
+import { Skills, Tags, Ratings} from '../imports/collections/Tags';
 
 Meteor.publish("skills", function () {
     return Skills.find({});  
  });
+
+Meteor.publish("user_ratings", function () {
+    return Ratings.find({ user: this.userId });
+})
 
 Meteor.methods({
     skill_create(text, category) {
@@ -11,9 +15,11 @@ Meteor.methods({
     }, 
     
     update_skill_level(skillId, level) {
-        var rating = {};
-        rating[this.userId] = level; 
-        Skills.update({_id:skillId}, { $set: { user_ratings: rating } });
+        Ratings.update({ user: this.userId, skill: skillId }, { $set: { user:this.userId, skill: skillId, level: level }}, { upsert: true });
+    },
+    
+    remove_skill_level(skillId) {
+       Ratings.remove({ user: this.userId, skill: skillId });
     },
     
 });

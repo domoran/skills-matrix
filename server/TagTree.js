@@ -1,4 +1,4 @@
-import { Tags } from '../imports/collections/Tags';
+import { Skills, Tags } from '../imports/collections/Tags';
 
 Meteor.publish("tags", function () {
     return Tags.find({});  
@@ -14,7 +14,6 @@ let getChilds = function (id, childsArray) {
 
 Meteor.methods({
     tag_insert(parentId, text) {
-        console.log("Insert:" + parentId + "-->" + text);
         if (!Tags.findOne({_id: parentId})) parentId = null; 
         
         Tags.insert({ text, parent: parentId});  
@@ -22,6 +21,7 @@ Meteor.methods({
     
     tag_rename(id, text) {
         Tags.update( { _id : id }, { $set: {text: text }});
+        Skills.update( { _id : id }, { $set: {text: text }});
         
     },
     

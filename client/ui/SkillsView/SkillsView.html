@@ -1,7 +1,7 @@
 <template name="SkillsView">
   <div class="row-fluid">
     <div class="col-md-4 tasktree">
-        {{ > TagTree selectTag=log enableEdit=true}}
+        {{ > TagTree selectTag=selectCallback enableEdit=true}}
     </div>
     
     <div class="col-md-8 tasklist">

@@ -1,34 +1,49 @@
+import { Ratings } from '/imports/collections/Tags';
+
 Template.SkillEditor.onCreated(function () {
-    this.skill = this.data.skill; 
-    this.id = "rating_" + this.skill._id; 
+    this.subscribe("user_ratings");
+    this.id =  this.data.skill._id;
+    this.widgetId = "rating_" + this.id; 
+    
+    this.updating = false; 
+    this.level = new ReactiveVar();
+    
+    var self = this; 
+    
+    this.autorun(function (c) {
+        var rating = Ratings.findOne({ user: Meteor.userId(), skill: self.id });
+
+        // Ignore change events that happen to to the update of the DB
+        self.updating = true; 
+        if (rating && rating.level) {
+            self.level.set(rating.level); 
+        } else {
+            self.level.set(0);
+        }
+        
+        // Ensure that we block change events until after the Screen has been updated!
+        Tracker.afterFlush(function () { self.updating = false; });
+    });
 });
 
 Template.SkillEditor.onRendered(function () {
     var self = this; 
     
-    this.$("#" + this.id).on('change', function (event) {
-        console.log("CHANGE!"); 
-        var rating = $(event.currentTarget).data("userrating");
-        Meteor.call('update_skill_level', self.skill._id, rating); 
+    this.$("#" + this.widgetId).on('change', function (event) {
+        var level = $(event.currentTarget).data("userrating");
+        if (self.updating || typeof level == "undefined") return;
+
+        Meteor.call('update_skill_level', self.id, level);
     });
 });
 
+Template.SkillEditor.events({
+    "click .js-remove-skill-level": function (event, instance) {
+        Meteor.call('remove_skill_level', instance.id); 
+    } 
+});
+
 Template.SkillEditor.helpers ({
-    selectedCategory () { return 'unknown'; },
-    
-    userSkill () {
-        var skill = 0; 
-        var skillId = Template.instance().skill._id;
-        var skillItem = Skills.findOne({_id: skillId});
-        if (skillItem && skillItem.user_ratings) {
-            var rating = skillItem.user_ratings[Meteor.userId()];
-            if (rating) skill = rating; 
-        }
-         
-        return skill; 
-    },
-    
-    widgetId (skill) {
-        return Template.instance().id; 
-    },
+    level () { return Template.instance().level.get() },
+    widgetId (skill) { return Template.instance().widgetId; },
 });

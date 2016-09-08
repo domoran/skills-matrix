@@ -22,15 +22,13 @@ Template.SkillsView.helpers ({
         return Tags.findOne({_id :  selectedId});
     },
     
-    log() { 
+    selectCallback() { 
         var instance = Template.instance(); 
         return function (item) { instance.selectedTag.set(item); };
     },
     
     skillGroups() {
         var items = Tags.find({ skills: { $exists: true, $not: {$size: 0} } });
-        console.log(items.fetch());
-        
         return items; 
     },
 });

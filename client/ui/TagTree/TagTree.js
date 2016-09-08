@@ -66,7 +66,6 @@ Template.TagTree.helpers({
                         Meteor.call("tag_rename", item, data.text); 
                     },
                     "move": function(e, item, data) { 
-                        console.log(arguments);  
                         Meteor.call("tag_move", item, data.parent);
                         return false; 
                     },
