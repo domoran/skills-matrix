@@ -5,24 +5,23 @@ Meteor.publish("tags", function () {
  });
 
 
-let getChilds = function (id, childsArray) {
-    _.each(Tags.find({ parent: id }).fetch(), function (item) {
-        childsArray.push(item); 
-        getChilds(item._id, childsArray);
-    }); 
-}
-
 Meteor.methods({
     tag_insert(parentId, text) {
         if (!Tags.findOne({_id: parentId})) parentId = null; 
         
-        Tags.insert({ text, parent: parentId});  
+        return Tags.insert({ text, parent: parentId});  
     }, 
     
     tag_rename(id, text) {
         Tags.update( { _id : id }, { $set: {text: text }});
         Skills.update( { _id : id }, { $set: {text: text }});
-        
+    },
+
+    tag_remove(id) {
+        var Tag = Tags.findOne({_id : id});
+        console.log("Remove : " + id); 
+        console.log(Tag);
+        if (Tag) Tag.remove(); 
     },
     
     tag_move(id, parentId) {
@@ -31,6 +30,7 @@ Meteor.methods({
             Tags.update( { _id : id }, { $set: {parent: parentId }});
         }
     },
+    
 });
 
 Meteor.startup(function () {

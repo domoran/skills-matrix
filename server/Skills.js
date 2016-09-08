@@ -14,6 +14,19 @@ Meteor.methods({
         Tags.update( {_id: category}, { $addToSet: { skills: skillId} });
     }, 
     
+    skill_add_category (id, category) {
+        Tags.update( {_id: category}, { $addToSet: { skills: id} });
+    },
+
+    skill_unsassign (id, category) {
+        Tags.update( {_id: category}, { $pull: { skills: id} });
+    },
+    
+    skill_move_category (id, old_category, category) {
+        Tags.update( {_id: category    }, { $addToSet: { skills: id} });
+        Tags.update( {_id: old_category}, { $pull    : { skills: id} });
+    },
+    
     update_skill_level(skillId, level) {
         Ratings.update({ user: this.userId, skill: skillId }, { $set: { user:this.userId, skill: skillId, level: level }}, { upsert: true });
     },
