@@ -1,5 +1,6 @@
 /* CSS declarations go here */
 
-.tasktree { background: lightblue }
-
-.tasklist { background: lightred; }
+.rating_element {
+	width: 400px;
+	display: inline-block;
+}

@@ -14,6 +14,7 @@ Template.SkillsView.events ({
 Template.SkillsView.onCreated(function () {
     Meteor.subscribe('tags'); 
     this.selectedTag = new ReactiveVar();  
+    this.selectedSkill = new ReactiveVar();  
 });
 
 Template.SkillsView.helpers ({
@@ -22,13 +23,30 @@ Template.SkillsView.helpers ({
         return Tags.findOne({_id :  selectedId});
     },
     
+    currentSkill () { 
+    	var skill = Template.instance().selectedSkill.get();
+    	return Skills.findOne({ _id : skill});
+    },
+    
     selectCallback() { 
         var instance = Template.instance(); 
         return function (item) { instance.selectedTag.set(item); };
     },
     
+    selectSkillCallback () {
+    	var instance = Template.instance(); 
+    	return function (item) { instance.selectedSkill.set(item); };
+    },
+    
     skillGroups() {
-        var items = Tags.find({ skills: { $exists: true, $not: {$size: 0} } });
+        var items = Tags.find({ skills: { $exists: true, $not: {$size: 0} } }).fetch();
+        var uncategorizedSkills = Skills.find({ categories: { $size: 0 }  }).fetch();
+        if (uncategorizedSkills.length > 0) {
+        	items.unshift({
+        		text: "Uncategorized Skills",
+        		getSkills: function () { return uncategorizedSkills},
+        	});         	
+        }
         return items; 
     },
 });

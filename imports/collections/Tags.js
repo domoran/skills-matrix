@@ -18,6 +18,7 @@ Tags.helpers({
         });
         
         Tags.remove( {_id : this._id });
+        Skills.update ( {}, { $pull: { categories: this._id }});
     },
 });
 

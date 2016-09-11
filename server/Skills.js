@@ -10,21 +10,33 @@ Meteor.publish("user_ratings", function () {
 
 Meteor.methods({
     skill_create(text, category) {
-        var skillId = Skills.insert({ text });
-        Tags.update( {_id: category}, { $addToSet: { skills: skillId} });
+    	var categories = category ? [category] : []; 
+        var skillId = Skills.insert({ text , categories: categories});
+        if (category) Tags.update( {_id: category}, { $addToSet: { skills: skillId} });
+        
     }, 
     
     skill_add_category (id, category) {
-        Tags.update( {_id: category}, { $addToSet: { skills: id} });
+    	if (category) Tags.update( {_id: category}, { $addToSet: { skills: id} });
+        if (category) Skills.update ({_id: id }, { $addToSet: { categories: category }});
     },
 
     skill_unsassign (id, category) {
         Tags.update( {_id: category}, { $pull: { skills: id} });
+        Skills.update ( { _id: id }, { $pull: {categories: category }}); 
+        
+        var skill = Skills.findOne({_id: id});
+        var ratings = Ratings.find({skill: id }).fetch();
+        console.log(ratings); 
+        if (ratings.length == 0) Skills.remove({_id: id}); 
     },
     
     skill_move_category (id, old_category, category) {
-        Tags.update( {_id: category    }, { $addToSet: { skills: id} });
+    	if (category) Tags.update( {_id: category    }, { $addToSet: { skills: id} });
+        if (category) Skills.update ({_id: id }, { $addToSet: { categories: category }});
+        
         Tags.update( {_id: old_category}, { $pull    : { skills: id} });
+        Skills.update ( { _id: id }, { $pull: {categories: old_category }}); 
     },
     
     update_skill_level(skillId, level) {

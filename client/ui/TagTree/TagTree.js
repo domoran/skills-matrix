@@ -5,14 +5,12 @@ Template.TagTree.onCreated(function () {
     Meteor.subscribe('skills'); 
 });
 
-window.Skills = Skills; 
-
 Template.TagTree.helpers({
     treeArgs: function () {
         var instance = (Template.instance()); 
         var context  = this; 
 
-        var plugins = [ "sort" , "state", "types" ];
+        var plugins = [ "sort" , "state", "types", "search" ];
         if (context.enableEdit) { 
             plugins.push("contextmenu"); 
             plugins.push("dnd"); 
@@ -27,16 +25,20 @@ Template.TagTree.helpers({
             
                     var parentTag = Tags.findOne({_id: parent});
             
+                    var skills = [];
                     if (parentTag && parentTag.skills) {
-                        var skills = parentTag.getSkills().fetch();
-                        _.each(skills, function(skill) {
-                            skill.category = parent;
-                            skill.dbId = skill._id; 
-                            skill._id = skill.category + "::" + skill.dbId;
-                            skill.type = 'skill'; 
-                        });
-                        tags = _.extend(tags, skills);
+                        skills = parentTag.getSkills().fetch();
+                    } else if (parent == null) {
+                    	skills = Skills.find({ categories: { $exists: true, $size: 0 } }).fetch();
                     }
+                    
+                    _.each(skills, function(skill) {
+                        skill.category = parent;
+                        skill.dbId = skill._id; 
+                        skill._id = skill.category + "::" + skill.dbId;
+                        skill.type = 'skill'; 
+                    });
+                    tags = tags.concat(skills);                    
             
                     return tags; 
                 },
@@ -58,11 +60,23 @@ Template.TagTree.helpers({
                             "icon" : "glyphicon glyphicon-briefcase",
                         },
                     },
+                    defaults: {
+                    	search: {
+                    		show_only_matches: true, 
+                    	}
+                    }
                 },
                 "events": {
                     "changed": function (e, item, data) {
                         if (data.item_data && data.item_data.type == "tag") {
                             if (context && context.selectTag) context.selectTag(data.item_data._id);
+                            if (context && context.selectedSkill) context.selectedSkill(null);
+                        } else if (data.item_data && data.item_data.type == "skill") {
+                        	if (context && context.selectedSkill) context.selectedSkill(data.item_data.dbId);
+                        	if (context && context.selectTag) context.selectTag(null); 
+                        } else {
+                        	if (context && context.selectedSkill) context.selectedSkill(null);
+                        	if (context && context.selectTag) context.selectTag(null); 
                         }
                     },
                     "create": function(e, item, data) { 
@@ -72,11 +86,13 @@ Template.TagTree.helpers({
                         } else {
 
                         }
+                        return false;
                     },
                     "rename": function(e, item, data) {
                         var id = item; 
                         if (data.item_data && data.item_data.type == "skill") id = data.item_data.dbId; 
                         Meteor.call("tag_rename", id, data.text);
+                        return false;
                     },
                     "delete": function (e, item, data) {
                         if (data.item_data) {
@@ -86,9 +102,9 @@ Template.TagTree.helpers({
                                 Meteor.call("skill_unsassign", data.item_data.dbId, data.item_data.category);
                             } else {
                                 // invalid type? 
-                            }
-                            
+                            }  
                         }
+                        return false;
                     },
                     "copy": function(e, item, data) {
                         if (data.item_data) {
@@ -106,6 +122,7 @@ Template.TagTree.helpers({
                                 }
                             }
                         }
+                        return false;
                     },
                     "move": function(e, item, data) { 
                         // fix stuff for root node

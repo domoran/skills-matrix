@@ -1,33 +1,41 @@
 <template name="SkillsView">
+<div class="container-fluid">
   <div class="row-fluid">
     <div class="col-md-4 tasktree">
-        {{ > TagTree selectTag=selectCallback enableEdit=true}}
+        <div class="row-fluid">
+            <h3> Skills / Categories </h3>
+            {{ > TagTree selectTag=selectCallback selectedSkill=selectSkillCallback enableEdit=true}}
+        </div>
     </div>
     
     <div class="col-md-8 tasklist">
-        <div class="row-fluid">
-            <form href="#" class="js-skill-create">
-                <div class="form-group">
-                    <label for="skillTitle">Create New Skill (in Category '{{currentCategory.text}}'): </label>
-                    <input type="text" class="form-control" name="skillTitle" id="skillTitle" placeholder="Skill Title">
-                </div>
-            </form>
-        </div>
+    {{#if currentCategory}}
+        <h3> Create new Skill</h3>
         
-        <div class="row-fluid">
-            {{#each group in skillGroups}}
-                {{ >SkillGroup category=group }}
-            {{/each}}
-        </div>
+        <form href="#" class="form-horizontal js-skill-create">
+            <div class="form-group">
+                <label class="col-md-5" for="skillTitle">Create New Skill (in Category '{{currentCategory.text}}'): </label>
+                <input class="col-md-5" type="text"  name="skillTitle" id="skillTitle" placeholder="Skill Title"/>
+            </div>
+        </form>
+     {{/if}}
+        {{#each group in skillGroups}}
+            {{ >SkillGroup category=group showRatings=showRatings }}
+        {{/each}}
     </div>
   </div>  
+  
+</div>
+  
 </template>
 
 <template name="SkillGroup">
-    <div class="row skill-group">
-        <h1>{{category.text}}</h1>
-        {{#each skill in category.getSkills}}
-            {{ >SkillEditor skill=skill }}
-        {{/each}}
-    </div>
+     <div class="row">
+         <h3 class="col-xs-12">{{category.text}}</h3>
+     </div>
+     {{#each skill in category.getSkills}}
+         <div class="row">
+             {{ >SkillEditor skill=skill }}
+         </div>
+     {{/each}}
 </template> 

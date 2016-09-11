@@ -1,11 +1,11 @@
 <template name="SkillEditor">
-    <div class="row">
-        <div class="col-xs-12 col-md-5"><b>{{skill.text}}</b></div>
-        <div class="col-xs-5 col-md-2">
+        <div class="col-xs-12 col-md-4"><b>{{skill.text}}</b></div>
+
+        <div class="col-xs-8 col-sm-5 col-md-3">
             {{> starsRating id=widgetId rating=level size='lg' mutable=true}}
         </div>
-        <div class="col-xs-2 col-md-1">
-            <button class="btn btn-xs js-remove-skill-level">&times;</button>
+        <div class="col-md-5">
+            <button class="pull-left btn btn-xs js-remove-skill-level">&times;</button>
         </div>
-    </div>
+        
 </template>

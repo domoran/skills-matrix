@@ -3,13 +3,16 @@
 </head>
 
 <body>
-  {{ > header }}
-  <main>
-    {{#if currentUser }}
-        {{ > SkillsView }}
-    {{else}}
-        <centered>Please login before you can edit skills!</centered>
-    {{/if}}
+  {{ > header }}     
+  <main class=".container">
   </main>
 </body>
+
+<template name="Application">
+    {{> Template.dynamic template=main}}
+</template>
+
+<template name="PleaseLogin">
+    <b> Please login before using the Skill Editor!</b>
+</template>
 
