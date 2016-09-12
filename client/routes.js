@@ -1,17 +1,21 @@
 FlowRouter.route('/', {
 	name: 'Skills.Edit',
 	action(params, queryParams) {
-		console.log(Meteor.user); 
-		console.log(Meteor.user())
-		if (Meteor.user()) {
-			console.log("SkillsView");
-			BlazeLayout.render('Application', { main: 'SkillsView' });
-		} else {
-			BlazeLayout.render('Application', { main: 'PleaseLogin' });
-		}
-		
+	    Tracker.autorun (function () {
+	        if (Meteor.user()) {
+	            BlazeLayout.render('Application', { main: 'SkillsView' });
+	        } else {
+	            BlazeLayout.render('Application', { main: 'PleaseLogin' });
+	        }
+	    });
 	}
 });
+
+Accounts.onLogin(function() {
+    var path = FlowRouter.current().path;
+    // we only do it if the user is in the login page
+      FlowRouter.go("/");
+  });
 
 FlowRouter.route('/SkillMatrix', {
   name: 'Lists.show',

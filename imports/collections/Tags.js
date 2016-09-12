@@ -18,7 +18,9 @@ Tags.helpers({
         });
         
         Tags.remove( {_id : this._id });
-        Skills.update ( {}, { $pull: { categories: this._id }});
+        Skills.update ( {}, { $pull: { categories: this._id }}, {multi: true});
+        
+        if (Tags.find().count() < 1) Tags.insert({ text: 'New Category', parent: null, skills: []});
     },
 });
 
