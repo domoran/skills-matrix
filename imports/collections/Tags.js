@@ -8,8 +8,8 @@ Tags.helpers({
     },
     
     getSkills () {
-        var skills = Skills.find({ _id: {$in: this.skills} }, { user_ratings: 0 });
-        return skills; 
+        var skills = this.skills || []; 
+        return Skills.find({ _id: {$in: skills} }, { user_ratings: 0 }); 
     },
     
     remove () {
@@ -28,4 +28,10 @@ Tags.helpers({
 
 export const Skills = new Mongo.Collection("Skills");
 
+Skills.getUncategorized = function () {
+    return Skills.find({ categories: { $exists: true, $size: 0 } });
+}
+
 export const Ratings = new Mongo.Collection("Ratings");
+
+export const SkillMatrixRows = new Mongo.Collection("SkillMatrixRows"); 

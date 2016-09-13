@@ -8,6 +8,11 @@ Meteor.publish("user_ratings", function () {
     return Ratings.find({ user: this.userId });
 })
 
+Meteor.publish("ratings", function () {
+    return Ratings.find(); 
+});
+
+
 Meteor.methods({
     skill_create(text, category) {
     	var categories = category ? [category] : []; 

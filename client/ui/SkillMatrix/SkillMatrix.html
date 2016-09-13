@@ -1,3 +1,30 @@
 <template name="SkillMatrix">
-<b> Users: {{userCount}}</b>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Skill</th>
+                {{#each user in users}}
+                    <th><center>{{user.username}}</center></th>
+                {{/each}}
+            </tr>
+        </thead>
+        
+        
+        <tbody>
+            {{#each category in categories}}
+                {{#each skill in (skills category) }}
+                    <tr>
+                        <td><b>{{skill.text}}</b></td>
+                        {{#each user in users}}
+                            <td>
+                            {{> starsRating rating=(getRatings user skill) size='xs'}}
+                            </td>
+                        {{/each}}
+                    </tr>
+                {{/each}}
+            {{/each}}
+        </tbody>
+    
+    
+    </table>
 </template>

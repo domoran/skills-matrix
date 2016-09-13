@@ -1,36 +1,41 @@
-import { Tags, Skills, Ratings} from '/imports/collections/Tags';
+import { Tags, Skills, Ratings, SkillMatrixRows } from '/imports/collections/Tags';
+import { TabularTables } from '/imports/collections/Tables';
+import { Session } from 'meteor/session';
+
 
 Template.SkillMatrix.onCreated(function () {
-	this.subscribe('skillsmatrix');
-	
-	var self = this; 
-	
-	self.skills = new ReactiveVar(); 
-	self.ratings = new ReactiveVar(); 
-	self.tags  = new ReactiveVar(); 
-	self.users   = new ReactiveVar(); 
-	
-	
-	this.autorun(function (c) {
-		self.skills.set(Skills.find({}).fetch());
-		console.log("Fetched skills!"); 
-	});
-	this.autorun(function (c) {
-		self.ratings.set(Ratings.find({}).fetch());
-		console.log("Fetched ratings!"); 
-	});
-	this.autorun(function (c) {
-		self.tags.set(Tags.find({}).fetch());
-		console.log("Fetched tags!"); 
-	});
-	this.autorun(function (c) {
-		self.users.set(Meteor.users.find({}).fetch());
-		console.log("Fetched users!"); 
-	});
+    var self = this; 
+    
+    this.autorun(function () {
+        self.subscribe("userlist"); 
+        self.subscribe("tags");
+        self.subscribe("skills");
+        self.subscribe("ratings");
+    });
 });
 
+
 Template.SkillMatrix.helpers({
-	userCount () {
-		return Template.instance().users.get().length;
-	},
+    users () { 
+        return Meteor.users.find();
+    },
+    
+    categories() { 
+        return [{_id: null, text: "Uncategorized Skills"}]
+               .concat( Tags.find().fetch() ); 
+    },
+    
+    skills(category) { 
+        if (!category._id) {
+            return Skills.getUncategorized(); 
+        } else {
+            return category.getSkills(); 
+        }
+    },
+    
+    getRatings(user, skill) {
+        var rating = Ratings.findOne({ user: user._id, skill: skill._id });
+        if (rating) return rating.level; 
+        return "x"; 
+    },
 });

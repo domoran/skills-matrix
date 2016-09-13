@@ -29,7 +29,7 @@ Template.TagTree.helpers({
                     if (parentTag && parentTag.skills) {
                         skills = parentTag.getSkills().fetch();
                     } else if (parent == null) {
-                    	skills = Skills.find({ categories: { $exists: true, $size: 0 } }).fetch();
+                    	skills = Skills.getUncategorized().fetch();
                     }
                     
                     _.each(skills, function(skill) {
