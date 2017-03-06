@@ -9,7 +9,7 @@ Tags.helpers({
     
     getSkills () {
         var skills = this.skills || []; 
-        return Skills.find({ _id: {$in: skills} }, { user_ratings: 0 }); 
+        return Skills.find({ _id: {$in: skills} }, { user_ratings: 0, sort: {text: 1}}); 
     },
     
     remove () {

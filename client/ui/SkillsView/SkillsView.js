@@ -39,7 +39,7 @@ Template.SkillsView.helpers ({
     },
     
     skillGroups() {
-        var items = Tags.find({ skills: { $exists: true, $not: {$size: 0} } }).fetch();
+        var items = Tags.find({ skills: { $exists: true, $not: {$size: 0} } }, { sort: { text: 1} }).fetch();
         var uncategorizedSkills = Skills.find({ categories: { $size: 0 }  }).fetch();
         if (uncategorizedSkills.length > 0) {
         	items.unshift({
